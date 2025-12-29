@@ -1,0 +1,28 @@
+# Ignore huge data folders (you should mount these, not copy them)
+dicom_storage/
+dicom_data/
+datasets/
+
+# Ignore Python garbage
+_pycache_/
+*.pyc
+venv/
+# .env
+.venv/
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+# Ignore system files
+.DS_Store
+.git/
+
+# ignore IDE files
+.vscode/
+.idea/
+
+# node modules
+node_modules/
