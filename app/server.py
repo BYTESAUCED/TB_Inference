@@ -42,7 +42,7 @@ async def startup_event():
     if os.path.exists(MODEL_PATH):
         strategy = get_system_strategy()
         engine = InferenceEngine(MODEL_PATH, strategy)
-        if engine.model or engine.session:
+        if engine.model:
             print(f"Model loaded successfully on {engine.strategy['description']}")
         else:
             print("Failed to load model on startup.")
@@ -51,7 +51,7 @@ async def startup_event():
 
 @app.post("/analyze", response_model=List[PatientResult])
 async def analyze_patients(request: AnalysisRequest = Body(...)):
-    if not engine or (not engine.model and not engine.session):
+    if not engine or not engine.model:
         raise HTTPException(status_code=503, detail="Model not loaded.")
 
     results = []
@@ -141,5 +141,6 @@ async def analyze_patients(request: AnalysisRequest = Body(...)):
 
 @app.get("/health")
 def health_check():
-    status = "healthy" if engine and (engine.model or engine.session) else "degraded"
-    return {"status": status, "device": engine.device if engine else "none"}
+    status = "healthy" if engine and engine.model else "degraded"
+    # Convert torch.device to string for JSON serialization
+    return {"status": status, "device": str(engine.device) if engine else "none"}
